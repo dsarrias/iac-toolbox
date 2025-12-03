@@ -9,6 +9,7 @@ Designed to simplify cloud infrastructure workflows by providing:
 - **Trivy** — Security scanner for container images and IaC
 - **tflint** — Terraform linter for best practices
 - **terraform-docs** — Automatically generate documentation from Terraform modules
+- **General tools** such as bash, wget, git etc
 
 ---
 
