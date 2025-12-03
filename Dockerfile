@@ -1,19 +1,20 @@
 FROM alpine:3.20
 
 # Versions
-ARG TERRAFORM_VERSION=1.13.2
-ARG TERRAGRUNT_VERSION=0.87.1
-ARG TOFU_VERSION=1.10.6
-ARG TRIVY_VERSION=0.66.0
-ARG TFLINT_VERSION=0.59.1
+ARG TERRAFORM_VERSION=1.14.1
+ARG TERRAGRUNT_VERSION=0.93.12
+ARG TOFU_VERSION=1.10.7
+ARG TRIVY_VERSION=0.68.1
+ARG TFLINT_VERSION=0.60.0
 ARG TERRAFORM_DOCS_VERSION=0.20.0
 
-# Install dependencies
+# Install dependencies and tools
 RUN set -eu && apk add --no-cache \
     bash \
     wget \
     unzip \
     tar \
+    git \
     ca-certificates && \
     update-ca-certificates
 
