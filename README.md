@@ -27,12 +27,11 @@ Designed to simplify cloud infrastructure workflows by providing:
 ```yaml
 services:
   iac-cli:
-    image: yourusername/iac-toolbox:local
+    image: dsarrias/iac-toolbox:latest
     user: "${MYUID}:${MYGID}"
     volumes:
       - .:/app
     working_dir: /app
-    entrypoint: ["/bin/bash"]
     tty: true
 ```
 
