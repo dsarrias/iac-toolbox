@@ -52,3 +52,51 @@ jobs:
           tags: |
             dsarrias/iac-toolbox:${{ github.ref_name }}
             dsarrias/iac-toolbox:latest
+
+  sync-readme-to-dockerhub:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Sync README to Docker Hub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_REPO: iac-toolbox
+        run: |
+          # Login to Docker Hub to get JWT token
+          token=$(curl -s -H "Content-Type: application/json" -X POST \
+            -d "{\"username\":\"$DOCKERHUB_USERNAME\",\"password\":\"$DOCKERHUB_PASSWORD\"}" \
+            https://hub.docker.com/v2/users/login/ | python -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
+
+          if [ -z "$token" ]; then
+            echo "Docker Hub login failed"
+            exit 1
+          fi
+
+          # Read README.md and json-encode it safely
+          readme_json=$(python - <<'PY'
+import json,sys,io
+text=open('README.md',encoding='utf-8').read()
+print(json.dumps(text))
+PY
+)
+
+          # Patch repository full_description
+          http_code=$(curl -s -X PATCH "https://hub.docker.com/v2/repositories/${DOCKERHUB_USERNAME}/${DOCKERHUB_REPO}/" \
+            -H "Authorization: JWT ${token}" \
+            -H "Content-Type: application/json" \
+            -d "{\"full_description\": $readme_json}" \
+            -o /tmp/dockerhub_response.json -w "%{http_code}")
+
+          cat /tmp/dockerhub_response.json
+          
+          if [ "$http_code" != "200" ]; then
+            echo "Failed to sync README to Docker Hub (HTTP $http_code)"
+            exit 1
+          fi
+          
+          echo "README successfully synced to Docker Hub"
