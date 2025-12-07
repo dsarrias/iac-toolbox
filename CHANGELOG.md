@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/dsarrias/iac-toolbox/compare/v1.2.1...v1.2.2) (2025-12-07)
+
+
+### Bug Fixes
+
+* Fixed indendation in readme sync job ([30bfdb5](https://github.com/dsarrias/iac-toolbox/commit/30bfdb557e312b89198711ca252c1c515bfeb53f))
+* Fixed indendation in readme sync job ([8fe2397](https://github.com/dsarrias/iac-toolbox/commit/8fe2397a47d31f98fda04e088eebb61304db9c03))
+
 ## [1.2.1](https://github.com/dsarrias/iac-toolbox/compare/v1.2.0...v1.2.1) (2025-12-06)
 
 
