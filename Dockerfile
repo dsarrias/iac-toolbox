@@ -1,21 +1,44 @@
-FROM alpine:3.20
+FROM alpine:3.23
 
-# Versions
+# Dependency and tool versions
+ARG BASH_VERSION=5.3.3
+ARG WGET_VERSION=1.25.0
+ARG UNZIP_VERSION=6.0
+ARG TAR_VERSION=1.35
+ARG GIT_VERSION=2.52.0
+ARG CA_CERTS_VERSION=20251003
+ARG CURL_VERSION=8.17.0
+ARG GREP_VERSION=3.12
+ARG PYTHON3_VERSION=3.12.12
+ARG JQ_VERSION=1.8.1
+ARG ZIP_VERSION=3.0
+ARG MYSQL_CLIENT_VERSION=11.4.9
+ARG OPENSSH_VERSION=10.2
+ARG AWS_CLI_VERSION=2.32.7
+
 ARG TERRAFORM_VERSION=1.14.1
-ARG TERRAGRUNT_VERSION=0.93.12
+ARG TERRAGRUNT_VERSION=0.93.13
 ARG TOFU_VERSION=1.10.7
 ARG TRIVY_VERSION=0.68.1
 ARG TFLINT_VERSION=0.60.0
 ARG TERRAFORM_DOCS_VERSION=0.20.0
 
 # Install dependencies and tools
-RUN set -eu && apk add --no-cache \
-    bash \
-    wget \
-    unzip \
-    tar \
-    git \
-    ca-certificates && \
+RUN set -eu && apk update && apk add --no-cache \
+    bash~=${BASH_VERSION} \
+    wget~=${WGET_VERSION} \
+    unzip~=${UNZIP_VERSION} \
+    tar~=${TAR_VERSION} \
+    git~=${GIT_VERSION} \
+    curl~=${CURL_VERSION} \
+    grep~=${GREP_VERSION} \
+    python3~=${PYTHON3_VERSION} \
+    jq~=${JQ_VERSION} \
+    zip~=${ZIP_VERSION} \
+    mariadb-client~=${MYSQL_CLIENT_VERSION} \
+    openssh~=${OPENSSH_VERSION} \
+    aws-cli~=${AWS_CLI_VERSION} \
+    ca-certificates~=${CA_CERTS_VERSION} && \
     update-ca-certificates
 
 # Install Terraform
