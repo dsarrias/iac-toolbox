@@ -39,7 +39,8 @@ RUN set -eu && apk update && apk add --no-cache \
     openssh~=${OPENSSH_VERSION} \
     aws-cli~=${AWS_CLI_VERSION} \
     ca-certificates~=${CA_CERTS_VERSION} && \
-    update-ca-certificates
+    update-ca-certificates && \
+    addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Install Terraform
 RUN wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
@@ -75,6 +76,11 @@ RUN wget -q https://github.com/terraform-docs/terraform-docs/releases/download/v
     tar -xzf terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz && \
     mv terraform-docs /usr/local/bin/ && \
     rm terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz README.md LICENSE
+
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD terraform --version || exit 1
+
+USER appuser
 
 # Set default shell
 CMD ["/bin/bash"]
