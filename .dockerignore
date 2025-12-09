@@ -2,4 +2,6 @@
 .git
 .gitignore
 .dockerignore
+.dockleignore
+.trivyignore
 Makefile

@@ -1,0 +1,12 @@
+# Go stdlib vulnerabilities - Confirmed no patch available due to latest tool versions
+CVE-2025-61729
+CVE-2025-22874
+CVE-2025-47907
+CVE-2025-58183
+CVE-2025-58186
+CVE-2025-58187
+
+# Tool-specific dependencies - Confirmed no patch available in latest tool versions
+CVE-2025-66564
+CVE-2025-8959
+CVE-2025-22868

@@ -1,0 +1,5 @@
+# Skip Content trust for Docker
+CIS-DI-0005
+
+# Skip credentials in environment variables since it marks tool versions as error
+CIS-DI-0010
