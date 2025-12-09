@@ -23,13 +23,17 @@ build: ## Build Docker image
 .PHONY: dockle
 dockle: ## Audit image best practices (Dockle)
 	@echo "--- 🛡️ Running Dockle ---"
-	-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+	-docker run --rm \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v "$(shell pwd)/.dockleignore:/.dockleignore" \
 		goodwithtech/dockle:latest --exit-code 1 $(IMAGE_NAME):$(TAG)
 
 .PHONY: trivy
 trivy: ## Scan for vulnerabilities (Trivy)
 	@echo "--- 🦠 Running Trivy ---"
-	-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+	-docker run --rm \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v "$(shell pwd)/.trivyignore:/.trivyignore" \
 		aquasec/trivy:latest image \
 		--severity CRITICAL,HIGH --exit-code 1 --ignore-unfixed \
 		$(IMAGE_NAME):$(TAG)
