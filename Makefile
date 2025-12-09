@@ -35,7 +35,7 @@ trivy: ## Scan for vulnerabilities (Trivy)
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v "$(shell pwd)/.trivyignore:/.trivyignore" \
 		aquasec/trivy:latest image \
-		--severity CRITICAL,HIGH --exit-code 1 --ignore-unfixed \
+		--severity CRITICAL,HIGH --exit-code 1 --ignore-unfixed --no-progress \
 		$(IMAGE_NAME):$(TAG)
 
 .PHONY: run
