@@ -57,8 +57,16 @@ jobs:
           format: list
           exit-code: 1
           exit-level: WARN
-
+          # Allowlist the variables that are triggering the "Suspicious ENV key" warning
+          accept-key: >-
+            AWS_CLI_VERSION,OPENSSH_VERSION,MYSQL_CLIENT_VERSION,
+            CA_CERTS_VERSION,GIT_VERSION,CURL_VERSION,WGET_VERSION,
+            BASH_VERSION,PYTHON3_VERSION,JQ_VERSION,ZIP_VERSION,
+            UNZIP_VERSION,TAR_VERSION,GREP_VERSION,
+            TERRAFORM_VERSION,TERRAGRUNT_VERSION,TOFU_VERSION,
+            TRIVY_VERSION,TFLINT_VERSION,TERRAFORM_DOCS_VERSION
       - name: Run Trivy (Vulnerability Scanner)
+        if: success() || failure()
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.IMAGE_NAME }}:test
