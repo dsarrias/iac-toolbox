@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.3.0](https://github.com/dsarrias/iac-toolbox/compare/v1.2.2...v1.3.0) (2025-12-15)
+
+
+### Features
+
+* Add image checks and ARM support ([70c67f8](https://github.com/dsarrias/iac-toolbox/commit/70c67f803983da31c05a949d939fe635d699fc03))
+* Add local checks in Makefile ([62dfb08](https://github.com/dsarrias/iac-toolbox/commit/62dfb086582dcd93ae9a5781369893625189aada))
+* Add new tools and bump versions ([80a49eb](https://github.com/dsarrias/iac-toolbox/commit/80a49eb4a23d96ba75eeb935f67e4065e517669e))
+* Bump versions ([97ee793](https://github.com/dsarrias/iac-toolbox/commit/97ee79349a11bde924c20a0552314e58f7a6f2e4))
+* Improve test commands and ignore tools that cannot be fixed ([ba50c53](https://github.com/dsarrias/iac-toolbox/commit/ba50c53a17cadcf97cf967f270d1c40f932003f3))
+
+
+### Bug Fixes
+
+* Fix Dockle and Trivy test and jobs ([cc6d5bc](https://github.com/dsarrias/iac-toolbox/commit/cc6d5bc1295eac82222e23a5faf4a9a3ce5fe305))
+* Fix Dockle report and allow Trivy to run ([6163b26](https://github.com/dsarrias/iac-toolbox/commit/6163b26f862bdf218e9a7e2fb60d02bd2a1ca08d))
+* Fix Lint and Dockle reports ([af107ab](https://github.com/dsarrias/iac-toolbox/commit/af107abba4f612b19e4a597f02dd5ad710bca4b0))
+* Fix Trivy skip tools ([17458ae](https://github.com/dsarrias/iac-toolbox/commit/17458aed1ef18e45f66ca6e734110d0da101f65c))
+* More fixes ([715ebe4](https://github.com/dsarrias/iac-toolbox/commit/715ebe47c180feedb70b59deead8362cbaf807f5))
+
 ## [1.2.2](https://github.com/dsarrias/iac-toolbox/compare/v1.2.1...v1.2.2) (2025-12-07)
 
 
