@@ -70,13 +70,7 @@ jobs:
           vuln-type: os,library
           scanners: vuln,secret,misconfig
           severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-          skip-files: >-
-            /usr/local/bin/terraform,
-            /usr/local/bin/terragrunt,
-            /usr/local/bin/tofu,
-            /usr/local/bin/tflint,
-            /usr/local/bin/terraform-docs,
-            /usr/local/bin/trivy
+          skip-files: /usr/local/bin/terraform,/usr/local/bin/terragrunt,/usr/local/bin/tofu,/usr/local/bin/tflint,/usr/local/bin/terraform-docs,/usr/local/bin/trivy
 
   build-and-push:
     needs: build-and-scan
