@@ -18,7 +18,7 @@ lint: ## Check Dockerfile syntax (Hadolint)
 .PHONY: build
 build: ## Build Docker image
 	@echo "--- 🏗️ Building Image ---"
-	docker build -t $(IMAGE_NAME):$(TAG) .
+	docker build --no-cache -t $(IMAGE_NAME):$(TAG) .
 
 .PHONY: dockle
 dockle: ## Audit image best practices (Dockle)
@@ -35,7 +35,8 @@ trivy: ## Scan for vulnerabilities (Trivy)
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v "$(shell pwd)/.trivyignore:/.trivyignore" \
 		aquasec/trivy:latest image \
-		--severity CRITICAL,HIGH --exit-code 1 --ignore-unfixed --no-progress \
+		--severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 1 --ignore-unfixed --no-progress \
+		--skip-files "/usr/local/bin/terraform,/usr/local/bin/terragrunt,/usr/local/bin/tofu,/usr/local/bin/tflint,/usr/local/bin/terraform-docs,/usr/local/bin/trivy" \
 		$(IMAGE_NAME):$(TAG)
 
 .PHONY: run
