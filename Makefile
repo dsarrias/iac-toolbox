@@ -16,10 +16,15 @@ lint: ## Check Dockerfile syntax (Hadolint)
 	-docker run --rm -i hadolint/hadolint < Dockerfile
 
 .PHONY: build
-build: ## Build Docker image
-	@echo "--- 🏗️ Building Image ---"
-	docker build --no-cache -t $(IMAGE_NAME):$(TAG) .
+build: ## Build Docker AMD image
+	@echo "--- 🏗️ Building AMD Image ---"
+	docker build --no-cache --platform linux/amd64 -t $(IMAGE_NAME):$(TAG) .
 
+.PHONY: buildx
+buildx: ## Build Docker ARM image 
+	@echo "--- 🏗️ Building ARM Image ---"
+	docker buildx build --no-cache --platform linux/arm64 -t $(IMAGE_NAME):$(TAG) --load .
+	
 .PHONY: dockle
 dockle: ## Audit image best practices (Dockle)
 	@echo "--- 🛡️ Running Dockle ---"

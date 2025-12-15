@@ -1,5 +1,7 @@
 FROM alpine:3.23
 
+ARG TARGETARCH
+
 # Dependency and tool versions
 ARG BASH_VERSION=5.3.3
 ARG WGET_VERSION=1.25.0
@@ -43,39 +45,44 @@ RUN set -eu && apk update && apk add --no-cache \
     addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Install Terraform
-RUN wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
-    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
+RUN wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip && \
+    unzip terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip && \
     mv terraform /usr/local/bin/ && \
-    rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip LICENSE.txt
+    rm terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip LICENSE.txt
 
 # Install Terragrunt
-RUN wget -q https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64 && \
-    chmod +x terragrunt_linux_amd64 && \
-    mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
+RUN wget -q https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_${TARGETARCH} && \
+    chmod +x terragrunt_linux_${TARGETARCH} && \
+    mv terragrunt_linux_${TARGETARCH} /usr/local/bin/terragrunt
 
 # Install OpenTofu
-RUN wget -q https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_linux_amd64.zip && \
-    unzip tofu_${TOFU_VERSION}_linux_amd64.zip && \
+RUN wget -q https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_linux_${TARGETARCH}.zip && \
+    unzip tofu_${TOFU_VERSION}_linux_${TARGETARCH}.zip && \
     mv tofu /usr/local/bin/ && \
-    rm tofu_${TOFU_VERSION}_linux_amd64.zip CHANGELOG.md
+    rm tofu_${TOFU_VERSION}_linux_${TARGETARCH}.zip CHANGELOG.md
 
 # Install Trivy
-RUN wget -q https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz && \
-    tar -xzf trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz && \
+RUN case "${TARGETARCH}" in \
+        "amd64") TRIVY_ARCH="64bit" ;; \
+        "arm64") TRIVY_ARCH="ARM64" ;; \
+        *) echo "Unsupported architecture: ${TARGETARCH}"; exit 1 ;; \
+    esac && \
+    wget -q https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz && \
+    tar -xzf trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz && \
     mv trivy /usr/local/bin/ && \
-    rm trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
+    rm trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz
 
 # Install tflint
-RUN wget -q https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_amd64.zip && \
-    unzip tflint_linux_amd64.zip && \
+RUN wget -q https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_${TARGETARCH}.zip && \
+    unzip tflint_linux_${TARGETARCH}.zip && \
     mv tflint /usr/local/bin/ && \
-    rm tflint_linux_amd64.zip
+    rm tflint_linux_${TARGETARCH}.zip
 
 # Install terraform-docs
-RUN wget -q https://github.com/terraform-docs/terraform-docs/releases/download/v${TERRAFORM_DOCS_VERSION}/terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz && \
-    tar -xzf terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz && \
+RUN wget -q https://github.com/terraform-docs/terraform-docs/releases/download/v${TERRAFORM_DOCS_VERSION}/terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-${TARGETARCH}.tar.gz && \
+    tar -xzf terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-${TARGETARCH}.tar.gz && \
     mv terraform-docs /usr/local/bin/ && \
-    rm terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz README.md LICENSE
+    rm terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-${TARGETARCH}.tar.gz README.md LICENSE
 
 HEALTHCHECK --interval=5m --timeout=3s \
   CMD terraform --version || exit 1
