@@ -1,0 +1,40 @@
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+# Set environment variables if needed
+ENV PYTHONUNBUFFERED=1
+
+# Install ALL tools directly from Wolfi's secure repository.
+# 'apk' automatically detects the architecture and installs the correct binaries.
+RUN apk update && apk add --no-cache \
+  bash \
+  wget \
+  zip \
+  unzip \
+  git \
+  curl \
+  grep \
+  jq \
+  python-3.12 \
+  mariadb-client \
+  openssh-client \
+  ca-certificates \
+  aws-cli \
+  terraform \
+  opentofu \
+  terragrunt \
+  tflint \
+  trivy \
+  terraform-docs
+
+# Create the non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Switch to non-root user
+USER appuser
+
+# Healthcheck
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD terraform --version || exit 1
+
+# Default shell
+CMD ["/bin/bash"]
