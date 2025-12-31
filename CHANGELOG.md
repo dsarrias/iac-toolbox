@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/dsarrias/iac-toolbox/compare/v1.3.1...v1.3.2) (2025-12-31)
+
+
+### Bug Fixes
+
+* Rename primary workflow ([6d676e3](https://github.com/dsarrias/iac-toolbox/commit/6d676e3434d50211a7abc27f2a7ea1b78d00dc6c))
+
 ## [1.3.1](https://github.com/dsarrias/iac-toolbox/compare/v1.3.0...v1.3.1) (2025-12-15)
 
 
