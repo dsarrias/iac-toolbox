@@ -1,4 +1,4 @@
-name: Publish Docker image to registries
+name: iac-toolbox CI/CD
 
 on:
   pull_request:
