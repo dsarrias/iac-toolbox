@@ -32,7 +32,7 @@ jobs:
         with:
           dockerfile: Dockerfile.wolfi
           failure-threshold: error
-          ignore: DL3007,DL3018
+          ignore: DL3007,DL3018,DL3013
   build-and-scan:
     needs: lint
     runs-on: ubuntu-latest

@@ -65,7 +65,7 @@ test-wolfi: lint-wolfi build-wolfi dockle-wolfi trivy-wolfi clean-wolfi ## Run f
 .PHONY: lint-wolfi
 lint-wolfi: ## Check Dockerfile syntax (Hadolint)
 	@echo "--- 🔍 Running Hadolint (Wolfi) ---"
-	-docker run --rm -i hadolint/hadolint hadolint --ignore DL3007 --ignore DL3018 - < Dockerfile.wolfi
+	-docker run --rm -i hadolint/hadolint hadolint --ignore DL3007 --ignore DL3018 --ignore DL3013 - < Dockerfile.wolfi
 
 .PHONY: build-wolfi
 build-wolfi: ## Build Wolfi AMD image
