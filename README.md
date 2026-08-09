@@ -10,6 +10,8 @@ Designed to simplify cloud infrastructure workflows by providing:
 - **Trivy** — Security scanner for container images and IaC
 - **tflint** — Terraform linter for best practices
 - **terraform-docs** — Automatically generate documentation from Terraform modules
+- **Ansible** — Configuration management and automation
+- **kubectl** — Kubernetes cluster command-line tool
 - **General tools** such as bash, wget, git, etc.
 
 ---
@@ -21,6 +23,7 @@ Designed to simplify cloud infrastructure workflows by providing:
 - **Unified toolchain** — no need to install or manage tools locally  
 - **Consistent environment** — eliminate “works on my machine” issues  
 - **Seamless integration** — ready for Docker Compose, pipelines, or local use
+- **Always up to date** — pinned tool versions are checked and bumped automatically every week via Renovate
 
 ### 🏔️ Alpine Flavor (Standard)
 The classic, lightweight choice based on **Alpine Linux**. Ideal for general-purpose use, offering broad compatibility and a small footprint.
@@ -47,3 +50,4 @@ services:
       - .:/app
     working_dir: /app
     tty: true
+```

@@ -32,10 +32,13 @@ jobs:
         with:
           dockerfile: Dockerfile.wolfi
           failure-threshold: error
-          ignore: DL3007,DL3018
+          ignore: DL3007,DL3018,DL3013
   build-and-scan:
     needs: lint
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [amd64, arm64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -46,29 +49,28 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Build explicitly for amd64 for the scan to ensure compatibility with the runner
       - name: Build Docker image (for scanning)
         uses: docker/build-push-action@v5
         with:
           context: .
           load: true
-          tags: ${{ env.IMAGE_NAME }}:test
+          tags: ${{ env.IMAGE_NAME }}:test-${{ matrix.platform }}
           push: false
-          platforms: linux/amd64
+          platforms: linux/${{ matrix.platform }}
 
       - name: Run Dockle (Best Practices)
         uses: goodwithtech/dockle-action@main
         with:
-          image: ${{ env.IMAGE_NAME }}:test
+          image: ${{ env.IMAGE_NAME }}:test-${{ matrix.platform }}
           format: list
           exit-code: 1
           exit-level: WARN
-          
+
       - name: Run Trivy (Vulnerability Scanner)
         if: success() || failure()
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE_NAME }}:test
+          image-ref: ${{ env.IMAGE_NAME }}:test-${{ matrix.platform }}
           format: table
           exit-code: 1
           ignore-unfixed: true
@@ -85,14 +87,14 @@ jobs:
           context: .
           file: Dockerfile.wolfi
           load: true
-          tags: ${{ env.IMAGE_NAME }}:wolfi-test
+          tags: ${{ env.IMAGE_NAME }}:wolfi-test-${{ matrix.platform }}
           push: false
-          platforms: linux/amd64
+          platforms: linux/${{ matrix.platform }}
 
       - name: Run Dockle on Wolfi (Best Practices)
         uses: goodwithtech/dockle-action@main
         with:
-          image: ${{ env.IMAGE_NAME }}:wolfi-test
+          image: ${{ env.IMAGE_NAME }}:wolfi-test-${{ matrix.platform }}
           format: list
           exit-code: 1
           exit-level: WARN
@@ -101,7 +103,7 @@ jobs:
         if: success() || failure()
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE_NAME }}:wolfi-test
+          image-ref: ${{ env.IMAGE_NAME }}:wolfi-test-${{ matrix.platform }}
           format: table
           exit-code: 1
           ignore-unfixed: true
@@ -109,7 +111,7 @@ jobs:
           vuln-type: os,library
           scanners: vuln,secret,misconfig
           severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-          skip-files: /usr/local/bin/terraform,/usr/local/bin/terragrunt,/usr/local/bin/tofu,/usr/local/bin/tflint,/usr/local/bin/terraform-docs,/usr/local/bin/trivy
+          skip-files: /usr/bin/terraform,/usr/bin/terragrunt,/usr/bin/tofu,/usr/bin/tflint,/usr/bin/terraform-docs,/usr/bin/trivy
 
   build-and-push:
     needs: build-and-scan

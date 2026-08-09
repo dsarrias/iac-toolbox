@@ -24,7 +24,12 @@ RUN apk update && apk add --no-cache \
   terragrunt \
   tflint \
   trivy \
-  terraform-docs
+  terraform-docs \
+  kubectl \
+  py3-pip
+
+# Install Ansible (no Wolfi package available)
+RUN pip install --no-cache-dir --break-system-packages ansible-core
 
 # Create the non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
