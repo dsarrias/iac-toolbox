@@ -1,0 +1,92 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+  timezone: "UTC",
+  schedule: ["before 6am on monday"],
+
+  // Renovate's default commit type is "chore", which release-please's
+  // conventional-commit parsing does not treat as a version bump - merged
+  // bumps would sit on main without ever being tagged/published. "fix"
+  // makes every merge a patch release, which tags and triggers the
+  // existing docker-publish.yml build-and-push job.
+  semanticCommits: "enabled",
+  semanticCommitType: "fix",
+  semanticCommitScope: "deps",
+  labels: ["dependencies"],
+
+  packageRules: [
+    {
+      matchUpdateTypes: ["minor", "patch", "digest", "major"],
+      automerge: true,
+      platformAutomerge: true,
+    },
+    // alpine:3.23 and wolfi-base:latest have no digest pin today, so there
+    // is nothing for Renovate to bump when the tag is republished. Pin
+    // digests so both base images become trackable.
+    {
+      matchDatasources: ["docker"],
+      pinDigests: true,
+    },
+    // trivy-action and dockle-action are pinned to @master (a floating
+    // branch ref, not a version) - pin to a SHA so Renovate has something
+    // to bump.
+    {
+      matchManagers: ["github-actions"],
+      pinDigests: true,
+    },
+  ],
+
+  // Alpine package pins (BASH_VERSION, CURL_VERSION, etc.) are intentionally
+  // NOT covered here: Renovate has no datasource for Alpine's apk
+  // repository, so there's no reliable source to check them against.
+  customManagers: [
+    {
+      customType: "regex",
+      fileMatch: ["^Dockerfile$"],
+      matchStrings: ["ARG TERRAFORM_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "hashicorp/terraform",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      fileMatch: ["^Dockerfile$"],
+      matchStrings: ["ARG TERRAGRUNT_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "gruntwork-io/terragrunt",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      fileMatch: ["^Dockerfile$"],
+      matchStrings: ["ARG TOFU_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "opentofu/opentofu",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      fileMatch: ["^Dockerfile$"],
+      matchStrings: ["ARG TRIVY_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "aquasecurity/trivy",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      fileMatch: ["^Dockerfile$"],
+      matchStrings: ["ARG TFLINT_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "terraform-linters/tflint",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      fileMatch: ["^Dockerfile$"],
+      matchStrings: ["ARG TERRAFORM_DOCS_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "terraform-docs/terraform-docs",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+  ],
+}

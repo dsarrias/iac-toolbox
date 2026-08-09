@@ -10,12 +10,23 @@ permissions:
   issues: write
   pull-requests: write
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: googleapis/release-please-action@v4
+      - id: release
+        uses: googleapis/release-please-action@v4
         with:
           release-type: simple
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+      - name: Auto-merge release PR
+        if: ${{ steps.release.outputs.prs_created }}
+        run: gh pr merge --squash --auto "$(jq -r .number <<< '${{ steps.release.outputs.pr }}')"
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
