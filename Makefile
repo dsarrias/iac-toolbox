@@ -93,7 +93,7 @@ trivy-wolfi: ## Scan Wolfi image for vulnerabilities
 		-v "$(shell pwd)/.trivyignore:/.trivyignore" \
 		aquasec/trivy:latest image \
 		--severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 1 --ignore-unfixed --no-progress \
-		--skip-files "/usr/local/bin/terraform,/usr/local/bin/terragrunt,/usr/local/bin/tofu,/usr/local/bin/tflint,/usr/local/bin/terraform-docs,/usr/local/bin/trivy" \
+		--skip-files "/usr/bin/terraform,/usr/bin/terragrunt,/usr/bin/tofu,/usr/bin/tflint,/usr/bin/terraform-docs,/usr/bin/trivy" \
 		$(IMAGE_NAME):wolfi-$(TAG)
 
 .PHONY: run-wolfi
