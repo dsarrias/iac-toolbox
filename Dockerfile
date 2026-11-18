@@ -17,6 +17,7 @@ ARG ZIP_VERSION=3.0
 ARG MYSQL_CLIENT_VERSION=11.8.9
 ARG OPENSSH_VERSION=10.3
 ARG AWS_CLI_VERSION=2.34.63
+ARG ZLIB_VERSION=1.4
 
 ARG TERRAFORM_VERSION=1.17.2
 ARG TERRAGRUNT_VERSION=1.2.2
@@ -40,6 +41,7 @@ RUN set -eu && apk update && apk add --no-cache \
     mariadb-client~=${MYSQL_CLIENT_VERSION} \
     openssh~=${OPENSSH_VERSION} \
     aws-cli~=${AWS_CLI_VERSION} \
+    zlib~=${ZLIB_VERSION} \
     ca-certificates~=${CA_CERTS_VERSION} && \
     update-ca-certificates && \
     addgroup -S appgroup && adduser -S appuser -G appgroup
