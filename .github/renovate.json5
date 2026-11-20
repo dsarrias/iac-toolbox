@@ -1,0 +1,84 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+  timezone: "UTC",
+  schedule: ["before 6am on monday"],
+
+  // "fix" so release-please cuts a release for every merged bump ("chore" doesn't)
+  semanticCommits: "enabled",
+  semanticCommitType: "fix",
+  semanticCommitScope: "deps",
+  labels: ["dependencies"],
+
+  packageRules: [
+    {
+      matchUpdateTypes: ["minor", "patch", "digest", "major"],
+      automerge: true,
+      platformAutomerge: true,
+    },
+    {
+      matchDatasources: ["docker"],
+      pinDigests: true,
+    },
+  ],
+
+  // Alpine apk pins are not covered: no reliable datasource for them
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^Dockerfile(\\.wolfi)?$/"],
+      matchStrings: ["ARG TERRAFORM_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "hashicorp/terraform",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^Dockerfile(\\.wolfi)?$/"],
+      matchStrings: ["ARG TERRAGRUNT_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "gruntwork-io/terragrunt",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^Dockerfile(\\.wolfi)?$/"],
+      matchStrings: ["ARG TOFU_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "opentofu/opentofu",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^Dockerfile(\\.wolfi)?$/"],
+      matchStrings: ["ARG TRIVY_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "aquasecurity/trivy",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^Dockerfile(\\.wolfi)?$/"],
+      matchStrings: ["ARG TFLINT_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "terraform-linters/tflint",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^Dockerfile$/"],
+      matchStrings: ["ARG TERRAFORM_DOCS_VERSION=(?<currentValue>.*)"],
+      depNameTemplate: "terraform-docs/terraform-docs",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^\\.github/workflows/docker-publish\\.yml$/"],
+      matchStrings: ["DOCKLE_VERSION: (?<currentValue>.*)"],
+      depNameTemplate: "goodwithtech/dockle",
+      datasourceTemplate: "github-releases",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+  ],
+}
