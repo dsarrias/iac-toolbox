@@ -1,9 +1,18 @@
 FROM cgr.dev/chainguard/wolfi-base:latest
 
+ARG TARGETARCH
+
+# Public Wolfi no longer updates these tools, so they come from upstream releases (same versions as Dockerfile)
+ARG TERRAFORM_VERSION=1.17.2
+ARG TERRAGRUNT_VERSION=1.2.2
+ARG TOFU_VERSION=1.13.9
+ARG TRIVY_VERSION=0.76.2
+ARG TFLINT_VERSION=0.66.0
+
 # Set environment variables if needed
 ENV PYTHONUNBUFFERED=1
 
-# Install ALL tools directly from Wolfi's secure repository.
+# Install the remaining tools directly from Wolfi's secure repository.
 # 'apk' automatically detects the architecture and installs the correct binaries.
 RUN apk update && apk add --no-cache \
   bash \
@@ -19,12 +28,42 @@ RUN apk update && apk add --no-cache \
   openssh-client \
   ca-certificates \
   aws-cli \
-  terraform \
-  opentofu \
-  terragrunt \
-  tflint \
-  trivy \
-  terraform-docs
+  terraform-docs && \
+  mkdir -p /usr/local/bin
+
+# Install Terraform
+RUN wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip && \
+    unzip terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip && \
+    mv terraform /usr/local/bin/ && \
+    rm terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip LICENSE.txt
+
+# Install Terragrunt
+RUN wget -q https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_${TARGETARCH} && \
+    chmod +x terragrunt_linux_${TARGETARCH} && \
+    mv terragrunt_linux_${TARGETARCH} /usr/local/bin/terragrunt
+
+# Install OpenTofu
+RUN wget -q https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_linux_${TARGETARCH}.zip && \
+    unzip tofu_${TOFU_VERSION}_linux_${TARGETARCH}.zip && \
+    mv tofu /usr/local/bin/ && \
+    rm tofu_${TOFU_VERSION}_linux_${TARGETARCH}.zip CHANGELOG.md
+
+# Install Trivy
+RUN case "${TARGETARCH}" in \
+        "amd64") TRIVY_ARCH="64bit" ;; \
+        "arm64") TRIVY_ARCH="ARM64" ;; \
+        *) echo "Unsupported architecture: ${TARGETARCH}"; exit 1 ;; \
+    esac && \
+    wget -q https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz && \
+    tar -xzf trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz && \
+    mv trivy /usr/local/bin/ && \
+    rm trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz
+
+# Install tflint
+RUN wget -q https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_${TARGETARCH}.zip && \
+    unzip tflint_linux_${TARGETARCH}.zip && \
+    mv tflint /usr/local/bin/ && \
+    rm tflint_linux_${TARGETARCH}.zip
 
 # Create the non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
