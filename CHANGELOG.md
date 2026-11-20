@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.3](https://github.com/dsarrias/iac-toolbox/compare/v1.3.2...v1.3.3) (2026-11-20)
+
+
+### Bug Fixes
+
+* Install IaC tools in Wolfi from upstream releases ([e25d1f6](https://github.com/dsarrias/iac-toolbox/commit/e25d1f682e7c964755f9feb41f5ba17361cc478b))
+* Loosen Alpine package pins to major.minor ([02fb7ad](https://github.com/dsarrias/iac-toolbox/commit/02fb7adc0f3158dd5e2951a421a4636f2a676e20))
+* Pin zlib to patch CVE-2026-4738 ([4362959](https://github.com/dsarrias/iac-toolbox/commit/4362959aef9804c8923956bc38291535e5444106))
+* Upgrade base image packages in Alpine build ([9ec3a36](https://github.com/dsarrias/iac-toolbox/commit/9ec3a36f1e05c7ea29c1d8a59b5f69a7bbc933d9))
+
 ## [1.3.2](https://github.com/dsarrias/iac-toolbox/compare/v1.3.1...v1.3.2) (2025-12-31)
 
 
