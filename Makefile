@@ -13,7 +13,7 @@ test: lint build dockle trivy clean ## Run full pipeline (Lint -> Build -> Audit
 .PHONY: lint
 lint: ## Check Dockerfile syntax (Hadolint)
 	@echo "--- 🔍 Running Hadolint ---"
-	-docker run --rm -i hadolint/hadolint < Dockerfile
+	docker run --rm -i hadolint/hadolint < Dockerfile
 
 .PHONY: build
 build: ## Build Docker AMD image
@@ -28,7 +28,7 @@ buildx: ## Build Docker ARM image
 .PHONY: dockle
 dockle: ## Audit image best practices (Dockle)
 	@echo "--- 🛡️ Running Dockle ---"
-	-docker run --rm \
+	docker run --rm \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v "$(shell pwd)/.dockleignore:/.dockleignore" \
 		goodwithtech/dockle:latest --exit-code 1 $(IMAGE_NAME):$(TAG)
@@ -36,7 +36,7 @@ dockle: ## Audit image best practices (Dockle)
 .PHONY: trivy
 trivy: ## Scan for vulnerabilities (Trivy)
 	@echo "--- 🦠 Running Trivy ---"
-	-docker run --rm \
+	docker run --rm \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v "$(shell pwd)/.trivyignore:/.trivyignore" \
 		aquasec/trivy:latest image \
@@ -65,7 +65,7 @@ test-wolfi: lint-wolfi build-wolfi dockle-wolfi trivy-wolfi clean-wolfi ## Run f
 .PHONY: lint-wolfi
 lint-wolfi: ## Check Dockerfile syntax (Hadolint)
 	@echo "--- 🔍 Running Hadolint (Wolfi) ---"
-	-docker run --rm -i hadolint/hadolint hadolint --ignore DL3007 --ignore DL3018 - < Dockerfile.wolfi
+	docker run --rm -i hadolint/hadolint hadolint --ignore DL3007 --ignore DL3018 - < Dockerfile.wolfi
 
 .PHONY: build-wolfi
 build-wolfi: ## Build Wolfi AMD image
@@ -80,7 +80,7 @@ buildx-wolfi: ## Build Wolfi ARM image
 .PHONY: dockle-wolfi
 dockle-wolfi: ## Audit Wolfi image best practices
 	@echo "--- 🛡️ Running Dockle (Wolfi) ---"
-	-docker run --rm \
+	docker run --rm \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v "$(shell pwd)/.dockleignore:/.dockleignore" \
 		goodwithtech/dockle:latest --exit-code 1 $(IMAGE_NAME):wolfi-$(TAG)
@@ -88,7 +88,7 @@ dockle-wolfi: ## Audit Wolfi image best practices
 .PHONY: trivy-wolfi
 trivy-wolfi: ## Scan Wolfi image for vulnerabilities
 	@echo "--- 🦠 Running Trivy (Wolfi) ---"
-	-docker run --rm \
+	docker run --rm \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v "$(shell pwd)/.trivyignore:/.trivyignore" \
 		aquasec/trivy:latest image \
