@@ -1,6 +1,6 @@
 # IaC Toolbox Docker Image
 
-An **all-in-one AWS & DevOps Docker image** that bundles essential Infrastructure-as-Code (IaC) and automation tools into a single, ready-to-use container. Optimized for **Multi-Architecture** support (AMD64 & ARM64), it offers two robust flavors: **Alpine** and **Wolfi**.
+An **all-in-one AWS & DevOps Docker image** that bundles essential Infrastructure-as-Code (IaC) and automation tools into a single, ready-to-use container. Optimized for **Multi-Architecture** support (AMD64 & ARM64), it offers two robust flavors, **Alpine** and **Wolfi**, plus a **Kubernetes** variant.
 
 Designed to simplify cloud infrastructure workflows by providing:
 
@@ -31,6 +31,11 @@ The classic, lightweight choice based on **Alpine Linux**. Ideal for general-pur
 A **hardened, secure variant** based on **[Wolfi](https://github.com/wolfi-dev)** (by Chainguard). Designed for **zero-CVE** environments and minimal attack surface.
 - **Tag:** `wolfi-latest` (or `wolfi-vX.Y.Z`)
 - **Base:** `cgr.dev/chainguard/wolfi-base`
+
+### ☸️ Kubernetes Variant
+The Alpine flavor plus **kubectl**, **Helm** and **k9s**, for working with the clusters your IaC provisions.
+- **Tag:** `k8s-latest` (or `k8s-vX.Y.Z`)
+- **Base:** the Alpine flavor
 
 ---
 

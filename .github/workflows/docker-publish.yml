@@ -73,13 +73,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [alpine, wolfi]
+        flavor: [alpine, wolfi, k8s]
         arch: [amd64, arm64]
         include:
           - flavor: alpine
             dockerfile: Dockerfile
           - flavor: wolfi
             dockerfile: Dockerfile.wolfi
+          - flavor: k8s
+            dockerfile: Dockerfile
+            target: k8s
           - arch: amd64
             runner: ubuntu-24.04
           - arch: arm64
@@ -100,6 +103,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.dockerfile }}
+          target: ${{ matrix.target }}
           platforms: linux/${{ matrix.arch }}
           load: true
           tags: ${{ env.IMAGE_NAME }}:scan
@@ -127,6 +131,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.dockerfile }}
+          target: ${{ matrix.target }}
           platforms: linux/${{ matrix.arch }}
           no-cache: true
           sbom: true
@@ -160,7 +165,7 @@ jobs:
           hide-progress: true
           scanners: vuln,secret,misconfig
           severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-          skip-files: /usr/local/bin/terraform,/usr/local/bin/terragrunt,/usr/local/bin/tofu,/usr/local/bin/tflint,/usr/local/bin/terraform-docs,/usr/local/bin/trivy
+          skip-files: /usr/local/bin/terraform,/usr/local/bin/terragrunt,/usr/local/bin/tofu,/usr/local/bin/tflint,/usr/local/bin/terraform-docs,/usr/local/bin/trivy,/usr/local/bin/kubectl,/usr/local/bin/helm,/usr/local/bin/k9s
 
       - name: Export digest
         if: needs.resolve.outputs.release == 'true'
@@ -188,7 +193,7 @@ jobs:
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: exit 1
 
-  # Runs per flavor even if the other flavor failed; a flavor is promoted only if both arches passed
+  # Runs per flavor even if another flavor failed; a flavor is promoted only if both arches passed
   promote:
     name: promote (${{ matrix.flavor }})
     needs: [resolve, build-scan]
@@ -201,7 +206,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [alpine, wolfi]
+        flavor: [alpine, wolfi, k8s]
     steps:
       - name: Download digests
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -228,7 +233,7 @@ jobs:
             ${{ env.DOCKERHUB_REPO }}
           flavor: |
             latest=true
-            prefix=${{ matrix.flavor == 'wolfi' && 'wolfi-' || '' }},onlatest=true
+            prefix=${{ matrix.flavor != 'alpine' && format('{0}-', matrix.flavor) || '' }},onlatest=true
           tags: |
             type=semver,pattern=v{{version}},value=${{ needs.resolve.outputs.ref }}
             type=semver,pattern=v{{major}}.{{minor}},value=${{ needs.resolve.outputs.ref }}
