@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/dsarrias/iac-toolbox/compare/v1.3.3...v1.4.0) (2026-11-21)
+
+
+### Features
+
+* Add Kubernetes image variant ([71fc58c](https://github.com/dsarrias/iac-toolbox/commit/71fc58c0ceaa9b641f2986b3804b0ec2a3ef438e))
+* Add Kubernetes image variant ([34e5820](https://github.com/dsarrias/iac-toolbox/commit/34e5820c0372f4a2940f0e040181e604e21c9e79))
+
 ## [1.3.3](https://github.com/dsarrias/iac-toolbox/compare/v1.3.2...v1.3.3) (2026-11-20)
 
 
