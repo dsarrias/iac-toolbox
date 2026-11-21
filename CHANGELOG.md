@@ -5,7 +5,6 @@
 
 ### Features
 
-* Add Kubernetes image variant ([71fc58c](https://github.com/dsarrias/iac-toolbox/commit/71fc58c0ceaa9b641f2986b3804b0ec2a3ef438e))
 * Add Kubernetes image variant ([34e5820](https://github.com/dsarrias/iac-toolbox/commit/34e5820c0372f4a2940f0e040181e604e21c9e79))
 
 ## [1.3.3](https://github.com/dsarrias/iac-toolbox/compare/v1.3.2...v1.3.3) (2026-11-20)
@@ -57,7 +56,6 @@
 
 ### Bug Fixes
 
-* Fixed indendation in readme sync job ([30bfdb5](https://github.com/dsarrias/iac-toolbox/commit/30bfdb557e312b89198711ca252c1c515bfeb53f))
 * Fixed indendation in readme sync job ([8fe2397](https://github.com/dsarrias/iac-toolbox/commit/8fe2397a47d31f98fda04e088eebb61304db9c03))
 
 ## [1.2.1](https://github.com/dsarrias/iac-toolbox/compare/v1.2.0...v1.2.1) (2025-12-06)
@@ -65,7 +63,6 @@
 
 ### Bug Fixes
 
-* Change GITHUB_TOKEN with PAT ([4fdce40](https://github.com/dsarrias/iac-toolbox/commit/4fdce4071ee55cd52f5066ad7b40b6b78207baad))
 * Change GITHUB_TOKEN with PAT ([e159ea5](https://github.com/dsarrias/iac-toolbox/commit/e159ea56a4d08a076cc25337346333cb54459689))
 
 ## [1.2.0](https://github.com/dsarrias/iac-toolbox/compare/v1.1.0...v1.2.0) (2025-12-03)
