@@ -1,4 +1,4 @@
-FROM alpine:3.24
+FROM alpine:3.24 AS base
 
 ARG TARGETARCH
 
@@ -90,3 +90,36 @@ USER appuser
 
 # Set default shell
 CMD ["/bin/bash"]
+
+# Kubernetes variant (build with --target k8s)
+FROM base AS k8s
+
+ARG TARGETARCH
+
+ARG KUBECTL_VERSION=1.37.2
+ARG HELM_VERSION=4.3.2
+ARG K9S_VERSION=0.51.0
+
+USER root
+
+# Install kubectl
+RUN wget -q https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
+# Install Helm
+RUN wget -q https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
+    tar -xzf helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
+    mv linux-${TARGETARCH}/helm /usr/local/bin/ && \
+    rm -r helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz linux-${TARGETARCH}
+
+# Install k9s
+RUN wget -q https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz && \
+    tar -xzf k9s_Linux_${TARGETARCH}.tar.gz && \
+    mv k9s /usr/local/bin/ && \
+    rm k9s_Linux_${TARGETARCH}.tar.gz README.md LICENSE
+
+USER appuser
+
+# Standard image (default target)
+FROM base AS standard

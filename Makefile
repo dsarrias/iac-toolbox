@@ -108,6 +108,53 @@ clean-wolfi: ## Remove local Wolfi Docker image
 	docker rmi $(IMAGE_NAME):wolfi-$(TAG) || true
 
 # ------------------------------------------------------------------------------
+# Kubernetes Variant
+# ------------------------------------------------------------------------------
+
+.PHONY: test-k8s
+test-k8s: lint build-k8s dockle-k8s trivy-k8s clean-k8s ## Run full pipeline for the k8s variant
+
+.PHONY: build-k8s
+build-k8s: ## Build k8s AMD image
+	@echo "--- 🏗️ Building k8s AMD Image ---"
+	docker build --no-cache --platform linux/amd64 --target k8s -t $(IMAGE_NAME):k8s-$(TAG) .
+
+.PHONY: buildx-k8s
+buildx-k8s: ## Build k8s ARM image
+	@echo "--- 🏗️ Building k8s ARM Image ---"
+	docker buildx build --no-cache --platform linux/arm64 --target k8s -t $(IMAGE_NAME):k8s-$(TAG) --load .
+
+.PHONY: dockle-k8s
+dockle-k8s: ## Audit k8s image best practices
+	@echo "--- 🛡️ Running Dockle (k8s) ---"
+	docker run --rm \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v "$(shell pwd)/.dockleignore:/.dockleignore" \
+		goodwithtech/dockle:latest --exit-code 1 $(IMAGE_NAME):k8s-$(TAG)
+
+.PHONY: trivy-k8s
+trivy-k8s: ## Scan k8s image for vulnerabilities
+	@echo "--- 🦠 Running Trivy (k8s) ---"
+	docker run --rm \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v "$(shell pwd)/.trivyignore:/.trivyignore" \
+		aquasec/trivy:latest image \
+		--severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 1 --ignore-unfixed --no-progress \
+		--skip-files "/usr/local/bin/terraform,/usr/local/bin/terragrunt,/usr/local/bin/tofu,/usr/local/bin/tflint,/usr/local/bin/terraform-docs,/usr/local/bin/trivy,/usr/local/bin/kubectl,/usr/local/bin/helm,/usr/local/bin/k9s" \
+		$(IMAGE_NAME):k8s-$(TAG)
+
+.PHONY: run-k8s
+run-k8s: ## Run k8s image interactively
+	docker run --rm -it $(IMAGE_NAME):k8s-$(TAG) bash
+
+.PHONY: debug-k8s
+debug-k8s: build-k8s run-k8s ## Build and run k8s image
+
+.PHONY: clean-k8s
+clean-k8s: ## Remove local k8s Docker image
+	docker rmi $(IMAGE_NAME):k8s-$(TAG) || true
+
+# ------------------------------------------------------------------------------
 # Help
 # ------------------------------------------------------------------------------
 
